@@ -7,7 +7,7 @@ const git = simpleGit({
     binary: 'git',
     maxConcurrentProcesses: 6,
 })
-
+let temStoreGit = null;
 
 exports.initGit = () => {
     return new Promise((resolve, reject)=>{
@@ -23,10 +23,14 @@ exports.initGit = () => {
 }
 
 exports.pull = () => {
+    temStoreGit = simpleGit({
+        baseDir: path.resolve(__dirname, "./../cacheStore/melody-template-store"),
+        binary: 'git',
+        maxConcurrentProcesses: 6,
+    })
     return new Promise((resolve, reject) => {
-        git.pull((err, data)=>{
+        temStoreGit.pull((err, data)=>{
             if(err){
-                console.log('pull-err:', err);
                 reject(err);
             }else{
                 resolve(data);
@@ -55,6 +59,7 @@ exports.getRemoteList = () => {
             if(err){
                 reject(err);
             }else{
+                console.log('data:', data);
                 let res = data ||'';
                 resolve(res.split('\n'));
             }
@@ -74,6 +79,32 @@ exports.addRemote = () => {
     })
 }
 
+exports.checkout = (params=[]) => {
+    return new Promise((resolve, reject) => {
+        temStoreGit.checkout(...params, (err, data)=>{
+            if(err){
+                reject(err);
+            }else{
+                resolve(data);
+            }
+        })
+    })
+}
+
+exports.createBranch = (branch) => {
+    return new Promise((resolve, reject)=>{
+        temStoreGit.branch(branch, (err, data)=>{
+            if(err){
+                reject(err);
+            }else{
+                resolve(data);
+            }
+        })
+    })
+}
+
+
+
 exports.fetchRemote = () => {
     return new Promise((resolve, reject)=>{
         git.fetch(['templateupstream'], (err, data)=>{
@@ -88,20 +119,11 @@ exports.fetchRemote = () => {
 
 exports.getBranchs = () => {
     return new Promise((resolve, reject)=>{
-        git.remote(['show', 'templateupstream'], (err, data)=>{
+        temStoreGit.branch(['-a'], (err, data)=>{
             if(err){
                 reject(err);
             }else{
-                
-                const stringList = (data||'').split('\n');
-                const branchs = stringList.filter(item => item.includes('tracked'));
-                const res = branchs.map((item)=>{
-                    return item.replace('tracked', '').trim();
-                })
-                    .filter(item=>item.includes('template'))
-                    .map(item => item.replace('template/', ''))
-
-                resolve(res);
+                resolve(data);
             }
         })
     })
@@ -119,24 +141,18 @@ exports.deleteRemote =  () => {
     })
 }
 
-exports.clone = (branch) => {
-    return new Promise((resolve)=>{
-        git.clone('https://github.com/melodyWxy/melody-template-store.git', ['-b', `template/${branch}`], (err, data)=>{
+exports.clone = () => {
+    return new Promise((resolve, reject)=>{
+        git.clone('https://github.com/melodyWxy/melody-template-store.git', (err, data)=>{
             if(err){
-                throw err;
+                reject(err);
             }else{
-                const git = simpleGit({
-                    baseDir: `${process.cwd()}/melody-template-store`,
+                temStoreGit = simpleGit({
+                    baseDir: path.resolve(__dirname, "./../cacheStore/melody-template-store"),
                     binary: 'git',
                     maxConcurrentProcesses: 6,
                 })
-                git.remote(['remove', 'origin'], (err, res)=>{
-                    if(err){
-                        throw err;
-                    }else{
-                        resolve(res);
-                    }
-                })
+                resolve(data);
             }
         })
     })

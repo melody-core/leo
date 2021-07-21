@@ -9,15 +9,18 @@
   "bin": {
     "leo": "./index.js"
   },
-  "contributors": [{
-    "name" : "wxydesign",
-    "email" : "18210711176@163.com",
-    "url" : "https://github.com/melodyWxy"
-  }, {
-    "name" : "amjanney",
-    "email" : "1547702880@qq.com",
-    "url" : "https://github.com/amjanney"
-  }],
+  "contributors": [
+    {
+      "name": "wxydesign",
+      "email": "18210711176@163.com",
+      "url": "https://github.com/melodyWxy"
+    },
+    {
+      "name": "amjanney",
+      "email": "1547702880@qq.com",
+      "url": "https://github.com/amjanney"
+    }
+  ],
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.1",
