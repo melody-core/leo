@@ -8,7 +8,7 @@
 
 ```shell
     # 你可以单独安装并使用它
-    sudo yarn global add @melody-core/leo
+    yarn global add @melody-core/leo
     # use
     leo
 
