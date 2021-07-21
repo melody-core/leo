@@ -11,6 +11,8 @@ const storeContrulor = require('./libs/storeContrulor');
 const { checkBranch, asyncTemplate } = require('./libs/dowmloadTamplate');
 const promptConfig = require('./promptConfig');
 
+// 如果不存在cacheStore，就立即创建它
+
 
 class Leo {
   async start() {

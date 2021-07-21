@@ -1,6 +1,16 @@
 const simpleGit = require("simple-git");
 const { exec } = require('child_process');
 const path = require('path');
+const fs = require('fs');
+
+
+// 打个布丁
+(()=>{
+    const cudirs = fs.readdirSync(path.resolve(__dirname, './../'));
+    if(!cudirs.includes('cacheStore')){
+        fs.mkdirSync(path.resolve(__dirname, './../cacheStore'))
+    }
+})()
 
 const git = simpleGit({
     baseDir: path.resolve(__dirname, "./../cacheStore"),
