@@ -1,24 +1,20 @@
-const path = require('path')
-const simpleGit = require('simple-git');
 
-const storeGit = simpleGit({
-    baseDir: path.resolve(__dirname, "./../cacheStore"),
-    binary: 'git',
-    maxConcurrentProcesses: 6,
-})
-
+const { pull, initGit, addRemote, clone, getBranchs  } = require('./gitApis')
 
 class StoreContrulor{
+    constructor(){
+        this.current = {};
+    }
     async init(){
-        // 如果已经存在仓库，就直接更新仓库，否则先初始化仓库，再拉取仓库;
         try {
-            remoteList  = await getRemoteList();
+            await pull();
         } catch (error) {
             await initGit();
-            remoteList  = await getRemoteList();
+            await clone();
         }
-        // 同步远端store内容
-           
+        const remoteList = await getBranchs();
+        this.current = remoteList;
+        return remoteList;
     }
 
 }

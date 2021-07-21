@@ -2,85 +2,72 @@
 
 const { Command } = require("commander");
 const program = new Command();
-const getTemplates = require('./libs/getTemplates');
 const inquirer = require('inquirer');
 const chalk = require('chalk')
 const ora = require('ora');
 const logList = require('./libs/logList');
-const { rm, deleteRemote, clone } = require('./libs/gitApis');
+// const { rm, deleteRemote, clone } = require('./libs/gitApis');
+const storeContrulor = require('./libs/storeContrulor');
+const { checkBranch, asyncTemplate } = require('./libs/dowmloadTamplate');
+const promptConfig = require('./promptConfig');
+
+// 如果不存在cacheStore，就立即创建它
+
+
 class Leo {
-  start() {
+  async start() {
     // 1 同步远端store更新到本地缓存;
-    this.asyncStore();
+    const spinit = ora('🦁️正在检索中……');
+    spinit.start();
+    try {
+      await storeContrulor.init();
+    } catch (error) {
+      spinit.stop();
+      console.error(error)
+      console.error('检索失败, 请检查您的网络环境！', );
+      process.exit();
+    }
+    spinit.stop();
+    console.log(chalk.green('🦁️检索完毕！'))
 
     // 2 命令注册
-
-    // 版本
+    // version
     program
       .version(require("./package.json").version)
       .option("-v, --version", "查看当前版本");
 
-    // 项目初始化命令
+    // init
     program.command("init")
         .description('初始化一个项目模板')
         .action(async ()=>{
-          const spinner0 = ora('正在检索中，请等待...');
-          let spinner;
+          const spinitTem = ora('🦁️正在初始化模板中……');
           try {
-            spinner0.start();
-            const branchs = await getTemplates();
-            spinner0.stop();
-            console.log(chalk.green(`检索完毕。`));
-            const searchRes = await inquirer.prompt([{
-              type: 'list',
-              message: '请选择模板:',
-              name: 'template',
-              choices: branchs,
-            }])
+            const branchsData = storeContrulor.current;
+            const branchList = logList(branchsData);
+            const searchRes = await inquirer.prompt(promptConfig.getSearchListOptions(branchList))
+            await checkBranch(branchsData, searchRes.template);
             console.log(`您选择了模板: ${chalk.green(searchRes.template)}`);
-            spinner = ora('正在初始化中，请等待...');
-            spinner.start();
-            await clone(searchRes.template);
-            spinner.stop();
-            console.log(chalk.green(`初始化完毕，请自主修改项目目录名以及对应的package.json信息。`));
-            await deleteRemote();
-            await rm();
+            const projectParams = await inquirer.prompt(promptConfig.projectParams)
+            spinitTem.start();
+            await asyncTemplate(projectParams);
+            spinitTem.stop();
+            console.log(chalk.green('🦁️初始化模板成功!'))
           }catch (error) {
-            spinner0.stop();
-            spinner && spinner.stop();
-            console.error(error);
-            console.error(chalk.yellow('获取远端模板列表失败，请检测网络环境是否友好。'));
-            process.exit();
+            spinitTem.stop();
+            throw new Error(error);
           }
         })
 
-    // 查看模板列表命令
+    // list
     program.command("list")
         .description( "查看所有的项目模板")
-        .action(async ()=>{
-          const spinner = ora('正在检索中，请等待...');
-          spinner.start();
-          try {
-            const branchs = await getTemplates();
-            await deleteRemote();
-            spinner.stop();
-            console.log(chalk.green('检索成功!'))
-            logList(branchs);
-            await rm();
-          } catch (error) {
-            spinner.stop();
-            console.log(error)
-            console.error('获取远端模板列表失败，请检测网络环境是否友好。');
-            process.exit();
-          }
-          
+        .action(()=>{
+          const branchsData = storeContrulor.current;
+          logList(branchsData);
         })
 
-    program.parse(process.argv);
-  }
-  async asyncStore(){
-    // 同步远端store到本地缓存；
 
+    program.parse(process.argv);
   }
 }
 
