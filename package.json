@@ -1,0 +1,29 @@
+{
+  "name": "@melody-core/leo",
+  "version": "1.0.8",
+  "description": "初始化项目的脚手架命令工具",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "leo": "./index.js"
+  },
+  "contributors": [{
+    "name" : "wxydesign",
+    "email" : "18210711176@163.com",
+    "url" : "https://github.com/melodyWxy"
+  }, {
+    "name" : "amjanney",
+    "email" : "1547702880@qq.com",
+    "url" : "https://github.com/amjanney"
+  }],
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "commander": "^8.0.0",
+    "inquirer": "^8.1.2",
+    "ora": "^5.4.1",
+    "simple-git": "^2.41.1"
+  }
+}
