@@ -15,7 +15,6 @@ exports.initGit = () => {
             if(err){
                 reject(err);
             }else{
-                console.log(data);
                 resolve(data)
             }
         })
