@@ -10,6 +10,7 @@ const logList = require('./libs/logList');
 const storeContrulor = require('./libs/storeContrulor');
 const { checkBranch, asyncTemplate } = require('./libs/dowmloadTamplate');
 const promptConfig = require('./promptConfig');
+const timeoutPromise = require('./libs/timeoutPromise');
 
 // 如果不存在cacheStore，就立即创建它
 
@@ -17,19 +18,24 @@ const promptConfig = require('./promptConfig');
 class Leo {
   async start() {
     // 1 同步远端store更新到本地缓存;
-    const spinit = ora('🦁️正在检索中……');
+    const spinit = ora('🦁️leo正在检索模板版本，请稍候……');
     spinit.start();
     try {
-      await storeContrulor.init();
+      const raceRes = await Promise.race([storeContrulor.init(), timeoutPromise(5000)]);
+      if(raceRes === 'timeout'){
+        spinit.stop();
+        console.error('🦁️leo检索模板超时, 建议检查您的网络环境！', );
+        return;
+      }
+      spinit.stop();
+      console.log(chalk.green('🦁️leo模板版本检索完毕！'))
     } catch (error) {
       spinit.stop();
       console.error(error)
-      console.error('检索失败, 请检查您的网络环境！', );
-      process.exit();
+      console.log(chalk.yellow('🦁️leo检索失败, 建议检查您的网络环境！'));
+      // return;
     }
-    spinit.stop();
-    console.log(chalk.green('🦁️检索完毕！'))
-
+    
     // 2 命令注册
     // version
     program
