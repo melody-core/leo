@@ -97,7 +97,6 @@ module.exports = async(branch, propath, branchsData) => {
             message: "🦁️请给您的模板添加一个描述",
             name: 'desc'
         }]) ;
-        process.exit();
         spinit.start();
         await CommitTargetUpdate(tGit, iqdata.desc);
         const idBranch = ''+Date.now(); 
