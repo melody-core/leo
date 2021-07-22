@@ -16,7 +16,8 @@ const timeoutPromise = require('./libs/timeoutPromise');
 
 
 class Leo {
-  async start() {
+
+  async checkVersion(){
     // 1 同步远端store更新到本地缓存;
     const spinit = ora('🦁️leo正在检索模板版本，请稍候……');
     spinit.start();
@@ -35,6 +36,10 @@ class Leo {
       console.log(chalk.yellow('🦁️leo检索失败, 建议检查您的网络环境！'));
       // return;
     }
+  } 
+
+  async start() {
+
     
     // 2 命令注册
     // version
@@ -46,6 +51,7 @@ class Leo {
     program.command("init")
         .description('初始化一个项目模板')
         .action(async ()=>{
+          await this.checkVersion();
           const spinitTem = ora('🦁️正在初始化模板中……');
           try {
             const branchsData = storeContrulor.current;
@@ -67,7 +73,8 @@ class Leo {
     // list
     program.command("list")
         .description( "查看所有的项目模板")
-        .action(()=>{
+        .action(async ()=>{
+          await this.checkVersion();
           const branchsData = storeContrulor.current;
           logList(branchsData);
         })
