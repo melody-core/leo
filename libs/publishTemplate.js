@@ -90,7 +90,6 @@ module.exports = async(branch, propath, branchsData) => {
         if(!remoteList.includes('templateupstream')){
             await addTargetRemote(tGit);
         }
-        console.log(111);
         await addTargetUpdate(tGit);
         const iqdata = await inquirer.prompt([{
             type: 'input',
@@ -101,7 +100,7 @@ module.exports = async(branch, propath, branchsData) => {
         await CommitTargetUpdate(tGit, iqdata.desc);
         const idBranch = ''+Date.now(); 
         await checkoutTarget(tGit, idBranch);
-        await pushTargetRemoteBranch(tGit, `${idBranch}:${branch}`);
+        await pushTargetRemoteBranch(tGit, `${idBranch}:template/${branch}`);
     } catch (error) {
         spinit.stop();
         console.error(error);
