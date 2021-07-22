@@ -11,6 +11,7 @@ const storeContrulor = require('./libs/storeContrulor');
 const { checkBranch, asyncTemplate } = require('./libs/dowmloadTamplate');
 const promptConfig = require('./promptConfig');
 const timeoutPromise = require('./libs/timeoutPromise');
+const publishTemplate = require('./libs/publishTemplate'); 
 
 // 如果不存在cacheStore，就立即创建它
 
@@ -18,7 +19,7 @@ const timeoutPromise = require('./libs/timeoutPromise');
 class Leo {
 
   async checkVersion(){
-    // 1 同步远端store更新到本地缓存;
+    // check模板的版本 同步远端store更新到本地缓存;
     const spinit = ora('🦁️leo正在检索模板版本，请稍候……');
     spinit.start();
     try {
@@ -41,7 +42,7 @@ class Leo {
   async start() {
 
     
-    // 2 命令注册
+    // 命令注册
     // version
     program
       .version(require("./package.json").version)
@@ -72,11 +73,20 @@ class Leo {
 
     // list
     program.command("list")
-        .description( "查看所有的项目模板")
+        .description("查看所有的项目模板")
         .action(async ()=>{
           await this.checkVersion();
           const branchsData = storeContrulor.current;
           logList(branchsData);
+        })
+    
+    // publish 
+    program.command("publish <branch> [propath]")
+        .description("默认当前路径下的项目，发布到模板仓库")
+        .action(async(branch, propath)=>{
+          await this.checkVersion();
+          const branchsData = storeContrulor.current;
+          await publishTemplate(branch, propath, branchsData);
         })
 
 
