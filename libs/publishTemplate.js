@@ -17,22 +17,21 @@ const {
  } = require("./gitApis");
 
 const LOGS = {
-    a: "🦁️发布分支名称参数不符合规范, 参数形式应该为: template/xxx-xxx-xxx",
+    a: "🦁️发布分支名称参数不符合规范, 参数形式应该为: xxx-xxx-xxx",
     b: "🦁️远端已存在此分支名称的模板, 确认覆盖吗？",
     c: "🦁️已取消此操作。"
 }
 
 const checkBranch = (branch = '', branchsData) => {
-    const branchList = branch.split('/') || [];
-    if(branchList[0] !== 'template'){
+    if(!branch){
         return "a";
     }
-    if(!branchList[1]){
-        return "a";
+    if(branch[0] === '.'){
+        return 'a';
     }
     const { all = [] } = branchsData || {};
     const list = all.map((item = '')=>{
-        return item.replace('remotes/origin/', '');
+        return item.replace('remotes/origin/template/', '');
     })
     if(list.includes(branch)){
         return "b";
@@ -91,12 +90,14 @@ module.exports = async(branch, propath, branchsData) => {
         if(!remoteList.includes('templateupstream')){
             await addTargetRemote(tGit);
         }
+        console.log(111);
         await addTargetUpdate(tGit);
         const iqdata = await inquirer.prompt([{
             type: 'input',
             message: "🦁️请给您的模板添加一个描述",
             name: 'desc'
         }]) ;
+        process.exit();
         spinit.start();
         await CommitTargetUpdate(tGit, iqdata.desc);
         const idBranch = ''+Date.now(); 

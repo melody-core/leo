@@ -81,8 +81,8 @@ class Leo {
         })
     
     // publish 
-    program.command("publish <branch> [propath]")
-        .description("默认当前路径下的项目，发布到模板仓库")
+    program.command("publish <templateName> [propath]")
+        .description("发布模板到模板仓库,默认当前所在项目路径，例: suika publish test-template")
         .action(async(branch, propath)=>{
           await this.checkVersion();
           const branchsData = storeContrulor.current;
