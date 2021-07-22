@@ -31,6 +31,18 @@ exports.initGit = () => {
     })
 }
 
+exports.initTarget = tGit => {
+    return new Promise((resolve, reject)=>{
+        tGit.init((err, data)=>{
+            if(err){
+                reject(err);
+            }else{
+                resolve(data)
+            }
+        })
+    })
+}
+
 exports.pull = () => {
     temStoreGit = simpleGit({
         baseDir: path.resolve(__dirname, "./../cacheStore/melody-template-store"),
@@ -87,6 +99,78 @@ exports.addRemote = () => {
         })
     })
 }
+
+exports.checkoutTarget = (target, branch) => {
+    return new Promise((resolve, reject)=>{
+        target.checkout(['-b', branch], (err, data) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(data);
+            }
+        })
+    })
+}
+
+exports.addTargetRemote = (target) => {
+    return new Promise((resolve, reject)=>{
+        target.remote(['add', 'templateupstream', 'https://github.com/melodyWxy/melody-template-store.git'], (err, data)=>{
+            if(err){
+                reject(err);
+            }else{
+                resolve(data);
+            }
+        })
+    })
+}
+
+exports.pushTargetRemoteBranch = (target, branch) => {
+    return new Promise((resolve, reject)=>{
+        target.push("templateupstream", branch, ['-f'], (err, data) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(data);
+            }
+        })
+    })
+}
+
+exports.getTargetRemotes = (target) => {
+    return new Promise((resolve, reject)=>{
+        target.remote([], (err, data) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(data);
+            }
+        })
+    })
+}
+exports.addTargetUpdate = (target) => {
+    return new Promise((resolve, reject)=>{
+        target.add(['.'], (err, data) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(data);
+            }
+        })
+    })
+}
+
+exports.CommitTargetUpdate = (target, desc) => {
+    return new Promise((resolve, reject)=>{
+        target.commit([desc], (err, data) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(data);
+            }
+        })
+    })
+}
+
 
 exports.checkout = (params=[]) => {
     return new Promise((resolve, reject) => {

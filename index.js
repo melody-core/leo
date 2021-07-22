@@ -11,13 +11,15 @@ const storeContrulor = require('./libs/storeContrulor');
 const { checkBranch, asyncTemplate } = require('./libs/dowmloadTamplate');
 const promptConfig = require('./promptConfig');
 const timeoutPromise = require('./libs/timeoutPromise');
+const publishTemplate = require('./libs/publishTemplate'); 
 
 // 如果不存在cacheStore，就立即创建它
 
 
 class Leo {
-  async start() {
-    // 1 同步远端store更新到本地缓存;
+
+  async checkVersion(){
+    // check模板的版本 同步远端store更新到本地缓存;
     const spinit = ora('🦁️leo正在检索模板版本，请稍候……');
     spinit.start();
     try {
@@ -35,8 +37,12 @@ class Leo {
       console.log(chalk.yellow('🦁️leo检索失败, 建议检查您的网络环境！'));
       // return;
     }
+  } 
+
+  async start() {
+
     
-    // 2 命令注册
+    // 命令注册
     // version
     program
       .version(require("./package.json").version)
@@ -46,6 +52,7 @@ class Leo {
     program.command("init")
         .description('初始化一个项目模板')
         .action(async ()=>{
+          await this.checkVersion();
           const spinitTem = ora('🦁️正在初始化模板中……');
           try {
             const branchsData = storeContrulor.current;
@@ -66,10 +73,20 @@ class Leo {
 
     // list
     program.command("list")
-        .description( "查看所有的项目模板")
-        .action(()=>{
+        .description("查看所有的项目模板")
+        .action(async ()=>{
+          await this.checkVersion();
           const branchsData = storeContrulor.current;
           logList(branchsData);
+        })
+    
+    // publish 
+    program.command("publish <templateName> [propath]")
+        .description("发布模板到模板仓库,默认当前所在项目路径，例: suika publish test-template")
+        .action(async(branch, propath)=>{
+          await this.checkVersion();
+          const branchsData = storeContrulor.current;
+          await publishTemplate(branch, propath, branchsData);
         })
 
 
