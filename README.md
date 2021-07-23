@@ -26,17 +26,22 @@
     -h, --help      display help for command
 
     Commands:
-    init            初始化一个项目模板
-    list            查看所有的项目模板
-
+    init                            初始化一个项目模板
+    list                            查看所有的项目模板
+    publish <templateName> [path]   发布一个模板到模板仓库
     
 ```
 
 ## 模板集成！
-> 如果你想在leo中集成模板，三步即可  1 进入模板仓库申请开发权限，或者使用fork仓库提交MR的方式; 2 开发前请注意阅读下方的模板开发规范！ 
+> 现在，如果你想集成一个模板，只需要运行一个命令即可一键发布
 
-+ 模板仓库
-https://github.com/melodyWxy/melody-template-store
-
-+ 模板开发规范
-https://github.com/melodyWxy/melody-template-store/blob/master/README.md
+```shell
+    # 例如: 你想把当前路径所在的一个项目(比如叫react-test-app)，发布成一个叫react-template的模板
+    # /react-test-app 项目的根目录下
+     # 运行publish命令，后面跟着的是你对模板的命名
+    leo publish react-template 
+    
+    # 如果你不在模板项目目录下，你可以通过path参数——相对路径来指定将某个项目发布成模板。
+    # path参数默认为 ./ 即当前路径。
+    leo publish react-template ./react-test-app
+```
