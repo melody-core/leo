@@ -90,7 +90,7 @@ exports.getRemoteList = () => {
 
 exports.addRemote = () => {
     return new Promise((resolve, reject)=>{
-        git.remote(['add', 'templateupstream', 'https://github.com/melodyWxy/melody-template-store.git'], (err, data)=>{
+        git.remote(['add', 'templateupstream', 'https://github.com/melody-core/melody-template-store.git'], (err, data)=>{
             if(err){
                 reject(err);
             }else{
@@ -114,7 +114,7 @@ exports.checkoutTarget = (target, branch) => {
 
 exports.addTargetRemote = (target) => {
     return new Promise((resolve, reject)=>{
-        target.remote(['add', 'templateupstream', 'https://github.com/melodyWxy/melody-template-store.git'], (err, data)=>{
+        target.remote(['add', 'templateupstream', 'https://github.com/melody-core/melody-template-store.git'], (err, data)=>{
             if(err){
                 reject(err);
             }else{
@@ -236,7 +236,7 @@ exports.deleteRemote =  () => {
 
 exports.clone = () => {
     return new Promise((resolve, reject)=>{
-        git.clone('https://github.com/melodyWxy/melody-template-store.git', (err, data)=>{
+        git.clone('https://github.com/melody-core/melody-template-store.git', (err, data)=>{
             if(err){
                 reject(err);
             }else{
