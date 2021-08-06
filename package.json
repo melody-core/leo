@@ -39,5 +39,12 @@
     "inquirer": "^8.1.2",
     "ora": "^5.4.1",
     "simple-git": "^2.41.1"
+  },
+  "bugs": {
+    "url": "https://github.com/melody-core/leo/issues"
+  },
+  "homepage": "https://melody-core.github.io/",
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com"
   }
 }
