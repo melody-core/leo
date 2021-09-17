@@ -34,7 +34,8 @@ class StoreContrulor{
             return remoteList;
         } catch (_error) {
             await removeCacheDir();
-            console.warning('🦁️ 狮子刚更新了模板，请重新执行命令启动狮子!')
+            console.warning('🦁️ 狮子刚更新了模板，请重新执行命令启动狮子!');
+            process.exit();
         }
 
     }
