@@ -23,23 +23,20 @@ class StoreContrulor{
     }
     async init(){
         try {
-            await pull();
-        } catch (error) {
             try {
-                await removeCacheDir();
-            } catch (__error) {}
-            await initGit();
-            await clone();
-        }
-        let remoteList;
-        try {
-            remoteList = await getBranchs();
-        } catch (error) {
+                await pull();
+            } catch (error) {
+                await initGit();
+                await clone();
+            }
+            const remoteList = await getBranchs();
+            this.current = remoteList;
+            return remoteList;
+        } catch (_error) {
             await removeCacheDir();
-            console.warning('🦁️ 狮子刚修复了一个小bug，请重新此命令。')
+            console.warning('🦁️ 狮子刚更新了模板，请重新执行命令启动狮子!')
         }
-        this.current = remoteList;
-        return remoteList;
+
     }
 }
 
